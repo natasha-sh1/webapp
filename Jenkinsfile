@@ -1,28 +1,12 @@
-pipeline {
-    agent { label 'master' }
-
-    stages {
-        stage('Build') {
-            steps {
-                bat 'mvn -B -DskipTests clean package'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                bat 'mvn test'
-            }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
-                }
-            }
-        }
-
-        stage('Sonar-Report') {
-            steps {
-                bat 'mvn clean install sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.analysis.mode=publish'
-            }
-        }
+stage('Build') {
+    steps {
+        bat """
+            set JAVA_HOME=C:\\Users\\ISHITA SHARMA\\AppData\\Local\\Programs\\Eclipse Adoptium\\jdk-17.0.16.8-hotspot
+            set PATH=%JAVA_HOME%\\bin;%PATH%
+            
+            echo After override, JAVA_HOME=%JAVA_HOME%
+            mvn -version
+            mvn -B -DskipTests clean package
+        """
     }
 }
