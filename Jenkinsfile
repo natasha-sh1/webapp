@@ -30,11 +30,16 @@ pipeline {
         }
 
         stage('Sonar-Report') {
-            steps {
-                withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
-                    bat """
-                        echo ===== SONAR STAGE =====
-                        mvn sonar:sonar -Dsonar.host.url=%SONAR_HOST_URL% -Dsonar.login=squ_35c91fe06aa1effb59bd286a389e3f61d40a1ba2 
+    steps {
+        bat """
+            echo ===== SONAR STAGE =====
+            set JAVA_HOME=C:\\Program Files\\jdk-21.0.8
+            set PATH=%JAVA_HOME%\\bin;%PATH%
+            
+            echo JAVA_HOME=%JAVA_HOME%
+            echo ---- running sonar analysis ----
+            
+            mvn clean install sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=squ_35c91fe06aa1effb59bd286a389e3f61d40a1ba2 
                     """
                 }
             }
