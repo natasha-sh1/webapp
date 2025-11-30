@@ -1,24 +1,20 @@
 pipeline {
     agent any
 
+    environment {
+        JAVA_HOME = 'C:\\Program Files\\jdk-21.0.8'
+        PATH = "${JAVA_HOME}\\bin;${env.PATH}"
+        SONAR_HOST_URL = 'http://localhost:9000'  // Replace with your SonarQube server
+    }
+
     stages {
         stage('Build') {
             steps {
                 bat """
                     echo ===== BUILD STAGE =====
-
-                    rem Set Java for this pipeline
-                    set JAVA_HOME=C:\\Program Files\\jdk-21.0.8
-                    set PATH=%JAVA_HOME%\\bin;%PATH%
-
                     echo JAVA_HOME=%JAVA_HOME%
-                    echo ---- java -version ----
                     java -version
-
-                    echo ---- mvn -version ----
                     mvn -version
-
-                    echo ---- mvn clean package (skip tests) ----
                     mvn -B -DskipTests clean package
                 """
             }
@@ -28,33 +24,19 @@ pipeline {
             steps {
                 bat """
                     echo ===== TEST STAGE =====
-
-                    rem Set Java again for safety
-                    set JAVA_HOME=C:\\Program Files\\jdk-21.0.8
-                    set PATH=%JAVA_HOME%\\bin;%PATH%
-
-                    echo JAVA_HOME=%JAVA_HOME%
-                    echo ---- running mvn test ----
                     mvn test
                 """
             }
         }
 
         stage('Sonar-Report') {
-    steps {
-        bat """
-            echo ===== SONAR STAGE =====
-
-            rem Set Java again for safety
-            set JAVA_HOME=C:\\Program Files\\jdk-21.0.8
-            set PATH=%JAVA_HOME%\\bin;%PATH%
-
-            echo JAVA_HOME=%JAVA_HOME%
-            echo ---- running sonar analysis ----
-
-            rem Run sonar with host URL (replace with your actual SonarQube IP and token if needed)
-            mvn clean install sonar:sonar -Dsonar.host.url=http://10.x.x.x:9000 -Dsonar.login=YOUR_SONAR_TOKEN
-                """
+            steps {
+                withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+                    bat """
+                        echo ===== SONAR STAGE =====
+                        mvn sonar:sonar -Dsonar.host.url=%SONAR_HOST_URL% -Dsonar.login=squ_35c91fe06aa1effb59bd286a389e3f61d40a1ba2 
+                    """
+                }
             }
         }
     }
