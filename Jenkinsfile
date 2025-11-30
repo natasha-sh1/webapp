@@ -40,20 +40,20 @@ pipeline {
             }
         }
 
-        stage('Sonar-Report') {
-            steps {
-                bat """
-                    echo ===== SONAR STAGE =====
+        tage('Sonar-Report') {
+    steps {
+        bat """
+            echo ===== SONAR STAGE =====
 
-                    rem Set Java again for safety
-                    set JAVA_HOME=C:\\Program Files\\jdk-21.0.8
-                    set PATH=%JAVA_HOME%\\bin;%PATH%
+            rem Set Java again for safety
+            set JAVA_HOME=C:\\Program Files\\jdk-21.0.8
+            set PATH=%JAVA_HOME%\\bin;%PATH%
 
-                    echo JAVA_HOME=%JAVA_HOME%
-                    echo ---- sonar analysis (this will fail if SonarQube not configured) ----
+            echo JAVA_HOME=%JAVA_HOME%
+            echo ---- running sonar analysis ----
 
-                    rem Replace this with your actual sonar command when ready
-                    mvn sonar:sonar
+            rem Run sonar with host URL (replace with your actual SonarQube IP and token if needed)
+            mvn clean install sonar:sonar -Dsonar.host.url=http://10.x.x.x:9000 -Dsonar.login=YOUR_SONAR_TOKEN
                 """
             }
         }
