@@ -40,7 +40,7 @@ pipeline {
             }
         }
 
-        tage('Sonar-Report') {
+        stage('Sonar-Report') {
     steps {
         bat """
             echo ===== SONAR STAGE =====
